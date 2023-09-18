@@ -1,8 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
 import { StyleSheet, View, ImageBackground } from 'react-native';
-import RegistrationScreen from './src/Screens/RegistrationScreen/RegistrationScreen';
-
+import LoginScreen from './src/Screens/LoginScreen/LoginScreen.jsx';
+import RegistrationScreen from './src/Screens/RegistrationScreen/RegistrationScreen.jsx';
 export default function App() {
   const [fontsLoaded] = useFonts({
     'Roboto-Regular': require('./assets/fonts/roboto-v30-cyrillic_latin-regular.ttf'),
@@ -14,15 +14,14 @@ export default function App() {
   }
   return (
     <>
-      <View style={styles.container}>
-        <ImageBackground
-          source={require('./assets/PhotoBG.png')}
-          style={styles.image}
-          resizeMode="cover"
-        >
-          <RegistrationScreen></RegistrationScreen>
-        </ImageBackground>
-      </View>
+      <ImageBackground
+        source={require('./assets/PhotoBG.png')}
+        style={styles.image}
+        resizeMode="cover"
+      >
+        {/* <LoginScreen></LoginScreen> */}
+        {/* <RegistrationScreen></RegistrationScreen> */}
+      </ImageBackground>
       <StatusBar style="auto"></StatusBar>
     </>
   );
