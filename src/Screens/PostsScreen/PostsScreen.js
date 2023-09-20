@@ -1,3 +1,5 @@
+import { View } from 'react-native';
+
 export default function PostsScreen() {
-  return <div>PostsScreen</div>;
+  return <View>PostsScreen</View>;
 }
