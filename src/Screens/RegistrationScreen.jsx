@@ -8,9 +8,9 @@ import {
   KeyboardAvoidingView,
   StyleSheet,
 } from 'react-native';
-import COLORS from '../../const/COLORS';
-import Input from '../../components/Input';
-import Button from '../../components/Button';
+import COLORS from '../const/COLORS';
+import Input from '../components/Input';
+import Button from '../components/Button';
 
 export default function RegistrationScreen() {
   return (
