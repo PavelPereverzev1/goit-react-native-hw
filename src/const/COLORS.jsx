@@ -5,6 +5,7 @@ const COLORS = {
   screenBg: '#ffffff',
   textClr: '#212121',
   linkTextClr: '#1B4371',
+  white: '#ffffff',
 };
 
 export default COLORS;

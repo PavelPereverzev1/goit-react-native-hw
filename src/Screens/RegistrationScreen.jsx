@@ -9,16 +9,36 @@ import {
   StyleSheet,
 } from 'react-native';
 import COLORS from '../const/COLORS';
+import { useState } from 'react';
 import Input from '../components/Input';
 import Button from '../components/Button';
 
 export default function RegistrationScreen() {
+  const [inputs, setInputs] = useState({
+    login: '',
+    email: '',
+    password: '',
+  });
+
+  const handleOnChange = (text, inputName) => {
+    setInputs(prevState => ({ ...prevState, [inputName]: text }));
+  };
+
+  const showData = () => {
+    Keyboard.dismiss();
+    setInputs({
+      login: '',
+      email: '',
+      password: '',
+    });
+    console.log(inputs);
+  };
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <View style={styles.iconBox}>
           <TouchableOpacity style={styles.addImageBtn} onPress={() => {}}>
-            <Image source={require('../../../assets/Union.png')} />
+            <Image source={require('../../assets/union.png')} />
           </TouchableOpacity>
         </View>
         <Text style={styles.title}>Реєстрація</Text>
@@ -27,11 +47,30 @@ export default function RegistrationScreen() {
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={styles.wraper}
         >
-          <Input placeholder="Логін" />
-          <Input placeholder="Адреса електроної пошти" />
-          <Input placeholder="Пароль" password />
+          <Input
+            placeholder="Логін"
+            value={inputs.login}
+            onChangeText={text => {
+              handleOnChange(text, 'login');
+            }}
+          />
+          <Input
+            placeholder="Адреса електроної пошти"
+            value={inputs.email}
+            onChangeText={text => {
+              handleOnChange(text, 'email');
+            }}
+          />
+          <Input
+            placeholder="Пароль"
+            value={inputs.password}
+            password
+            onChangeText={text => {
+              handleOnChange(text, 'password');
+            }}
+          />
         </KeyboardAvoidingView>
-        <Button title="Зареєструватися" />
+        <Button title="Зареєструватися" onPress={showData} />
         <TouchableOpacity style={styles.loginLink} onPress={() => {}}>
           <Text style={styles.linkText}>Вже є акаунт? Увійти</Text>
         </TouchableOpacity>
