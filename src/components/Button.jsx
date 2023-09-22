@@ -1,8 +1,8 @@
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import COLORS from '../const/COLORS';
-const Button = ({ title }) => {
+const Button = ({ title, onPress = () => {} }) => {
   return (
-    <TouchableOpacity style={styles.Btn} onPress={() => {}}>
+    <TouchableOpacity style={styles.Btn} onPress={onPress}>
       <Text style={styles.btnText}>{title}</Text>
     </TouchableOpacity>
   );
@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
   },
   btnText: {
-    color: COLORS.screenBg,
+    color: COLORS.white,
     fontFamily: 'Roboto-Regular',
     fontSize: 16,
   },
