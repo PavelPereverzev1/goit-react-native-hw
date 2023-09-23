@@ -21,22 +21,21 @@ export default function App() {
   }
   return (
     <>
-      <ImageBackground
-        source={require('./assets/PhotoBG.png')}
-        style={styles.image}
-        resizeMode="cover"
-      >
-        <NavigationContainer>
-          <MainStack.Navigator initialRouteName="Login">
-            <MainStack.Screen name="Login" component={LoginScreen} />
-            <MainStack.Screen
-              name="Registration"
-              component={RegistrationScreen}
-            />
-            <MainStack.Screen name="Home" component={Home} />
-          </MainStack.Navigator>
-        </NavigationContainer>
-      </ImageBackground>
+      <NavigationContainer>
+        <MainStack.Navigator initialRouteName="Login">
+          <MainStack.Screen
+            name="Login"
+            component={LoginScreen}
+            options={{ headerShown: false }}
+          />
+          <MainStack.Screen
+            name="Registration"
+            component={RegistrationScreen}
+            options={{ headerShown: false }}
+          />
+          <MainStack.Screen name="Home" component={Home} />
+        </MainStack.Navigator>
+      </NavigationContainer>
       <StatusBar style="auto"></StatusBar>
     </>
   );
@@ -45,9 +44,5 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  image: {
-    flex: 1,
-    justifyContent: 'flex-end',
   },
 });

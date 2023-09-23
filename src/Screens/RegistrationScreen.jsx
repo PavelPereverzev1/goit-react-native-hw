@@ -7,13 +7,17 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   StyleSheet,
+  ImageBackground,
 } from 'react-native';
 import COLORS from '../const/COLORS';
 import { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import Input from '../components/Input';
 import Button from '../components/Button';
 
 export default function RegistrationScreen() {
+  const navigation = useNavigation();
+
   const [inputs, setInputs] = useState({
     login: '',
     email: '',
@@ -34,48 +38,65 @@ export default function RegistrationScreen() {
     console.log(inputs);
   };
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.container}>
-        <View style={styles.iconBox}>
-          <TouchableOpacity style={styles.addImageBtn} onPress={() => {}}>
-            <Image source={require('../../assets/union.png')} />
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.title}>Реєстрація</Text>
+    <ImageBackground
+      source={require('../../assets/PhotoBG.png')}
+      style={styles.image}
+      resizeMode="cover"
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.container}>
+          <View style={styles.iconBox}>
+            <TouchableOpacity style={styles.addImageBtn} onPress={() => {}}>
+              <Image source={require('../../assets/union.png')} />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.title}>Реєстрація</Text>
 
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={styles.wraper}
-        >
-          <Input
-            placeholder="Логін"
-            value={inputs.login}
-            onChangeText={text => {
-              handleOnChange(text, 'login');
-            }}
-          />
-          <Input
-            placeholder="Адреса електроної пошти"
-            value={inputs.email}
-            onChangeText={text => {
-              handleOnChange(text, 'email');
-            }}
-          />
-          <Input
-            placeholder="Пароль"
-            value={inputs.password}
-            password
-            onChangeText={text => {
-              handleOnChange(text, 'password');
-            }}
-          />
-        </KeyboardAvoidingView>
-        <Button title="Зареєструватися" onPress={showData} />
-        <TouchableOpacity style={styles.loginLink} onPress={() => {}}>
-          <Text style={styles.linkText}>Вже є акаунт? Увійти</Text>
-        </TouchableOpacity>
-      </View>
-    </TouchableWithoutFeedback>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={styles.wraper}
+          >
+            <Input
+              placeholder="Логін"
+              value={inputs.login}
+              onChangeText={text => {
+                handleOnChange(text, 'login');
+              }}
+            />
+            <Input
+              placeholder="Адреса електроної пошти"
+              value={inputs.email}
+              onChangeText={text => {
+                handleOnChange(text, 'email');
+              }}
+            />
+            <Input
+              placeholder="Пароль"
+              value={inputs.password}
+              password
+              onChangeText={text => {
+                handleOnChange(text, 'password');
+              }}
+            />
+          </KeyboardAvoidingView>
+          <Button title="Зареєструватися" onPress={showData} />
+          <View style={styles.regLink}>
+            <Text style={styles.linkText}>Вже є акаунт? </Text>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('Login');
+              }}
+            >
+              <Text
+                style={[styles.linkText, { textDecorationLine: 'underline' }]}
+              >
+                Увійти
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
+    </ImageBackground>
   );
 }
 
@@ -117,7 +138,8 @@ const styles = StyleSheet.create({
     fontSize: 30,
     marginBottom: 33,
   },
-  loginLink: {
+  regLink: {
+    flexDirection: 'row',
     width: '100%',
     marginTop: 16,
     justifyContent: 'center',
@@ -127,5 +149,9 @@ const styles = StyleSheet.create({
     color: COLORS.linkTextClr,
     fontFamily: 'Roboto-Regular',
     fontSize: 16,
+  },
+  image: {
+    flex: 1,
+    justifyContent: 'flex-end',
   },
 });

@@ -9,11 +9,14 @@ import {
   ImageBackground,
 } from 'react-native';
 import { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import COLORS from '../const/COLORS';
 import Input from '../components/Input';
 import Button from '../components/Button';
 
 export default function LoginScreen() {
+  const navigation = useNavigation();
+
   const [inputs, setInputs] = useState({
     email: '',
     password: '',
@@ -64,11 +67,14 @@ export default function LoginScreen() {
 
           <View style={styles.loginLink}>
             <Text style={styles.linkText}>Немає акаунту?</Text>
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('Registration');
+              }}
+            >
               <Text
                 style={[styles.linkText, { textDecorationLine: 'underline' }]}
               >
-                {' '}
                 Зареєструватися
               </Text>
             </TouchableOpacity>
@@ -108,5 +114,9 @@ const styles = StyleSheet.create({
     color: COLORS.linkTextClr,
     fontFamily: 'Roboto-Regular',
     fontSize: 16,
+  },
+  image: {
+    flex: 1,
+    justifyContent: 'flex-end',
   },
 });
