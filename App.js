@@ -1,8 +1,15 @@
+import 'react-native-gesture-handler';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
 import { StyleSheet, View, ImageBackground } from 'react-native';
 import LoginScreen from './src/Screens/LoginScreen.jsx';
 import RegistrationScreen from './src/Screens/RegistrationScreen.jsx';
+import Home from './src/Screens/Home.jsx';
+
+const MainStack = createStackNavigator();
+
 export default function App() {
   const [fontsLoaded] = useFonts({
     'Roboto-Regular': require('./assets/fonts/roboto-v30-cyrillic_latin-regular.ttf'),
@@ -19,8 +26,16 @@ export default function App() {
         style={styles.image}
         resizeMode="cover"
       >
-        {/* <LoginScreen></LoginScreen> */}
-        <RegistrationScreen></RegistrationScreen>
+        <NavigationContainer>
+          <MainStack.Navigator initialRouteName="Login">
+            <MainStack.Screen name="Login" component={LoginScreen} />
+            <MainStack.Screen
+              name="Registration"
+              component={RegistrationScreen}
+            />
+            <MainStack.Screen name="Home" component={Home} />
+          </MainStack.Navigator>
+        </NavigationContainer>
       </ImageBackground>
       <StatusBar style="auto"></StatusBar>
     </>

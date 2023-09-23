@@ -6,6 +6,7 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   StyleSheet,
+  ImageBackground,
 } from 'react-native';
 import { useState } from 'react';
 import COLORS from '../const/COLORS';
@@ -31,35 +32,50 @@ export default function LoginScreen() {
     console.log(inputs);
   };
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.container}>
-        <Text style={styles.title}>Увійти</Text>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={styles.wraper}
-        >
-          <Input
-            placeholder="Адреса електроної пошти"
-            value={inputs.email}
-            onChangeText={text => {
-              handleOnChange(text, 'email');
-            }}
-          />
-          <Input
-            placeholder="Пароль"
-            password
-            value={inputs.password}
-            onChangeText={text => {
-              handleOnChange(text, 'password');
-            }}
-          />
-        </KeyboardAvoidingView>
-        <Button title="Увійти" onPress={showData} />
-        <TouchableOpacity style={styles.loginLink} onPress={() => {}}>
-          <Text style={styles.linkText}>Немає акаунту? Зареєструватися</Text>
-        </TouchableOpacity>
-      </View>
-    </TouchableWithoutFeedback>
+    <ImageBackground
+      source={require('../../assets/PhotoBG.png')}
+      style={styles.image}
+      resizeMode="cover"
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.container}>
+          <Text style={styles.title}>Увійти</Text>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={styles.wraper}
+          >
+            <Input
+              placeholder="Адреса електроної пошти"
+              value={inputs.email}
+              onChangeText={text => {
+                handleOnChange(text, 'email');
+              }}
+            />
+            <Input
+              placeholder="Пароль"
+              password
+              value={inputs.password}
+              onChangeText={text => {
+                handleOnChange(text, 'password');
+              }}
+            />
+          </KeyboardAvoidingView>
+          <Button title="Увійти" onPress={showData} />
+
+          <View style={styles.loginLink}>
+            <Text style={styles.linkText}>Немає акаунту?</Text>
+            <TouchableOpacity onPress={() => {}}>
+              <Text
+                style={[styles.linkText, { textDecorationLine: 'underline' }]}
+              >
+                {' '}
+                Зареєструватися
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
+    </ImageBackground>
   );
 }
 
@@ -82,6 +98,7 @@ const styles = StyleSheet.create({
   },
 
   loginLink: {
+    flexDirection: 'row',
     width: '100%',
     marginTop: 16,
     justifyContent: 'center',
