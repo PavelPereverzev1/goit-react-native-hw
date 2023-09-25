@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
-import { StyleSheet, View, ImageBackground } from 'react-native';
+import { StyleSheet } from 'react-native';
 import LoginScreen from './src/Screens/LoginScreen.jsx';
 import RegistrationScreen from './src/Screens/RegistrationScreen.jsx';
 import Home from './src/Screens/Home.jsx';
@@ -33,7 +33,11 @@ export default function App() {
             component={RegistrationScreen}
             options={{ headerShown: false }}
           />
-          <MainStack.Screen name="Home" component={Home} />
+          <MainStack.Screen
+            name="Home"
+            component={Home}
+            options={{ headerShown: false }}
+          />
         </MainStack.Navigator>
       </NavigationContainer>
       <StatusBar style="auto"></StatusBar>

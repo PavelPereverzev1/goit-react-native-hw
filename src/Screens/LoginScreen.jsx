@@ -26,13 +26,13 @@ export default function LoginScreen() {
     setInputs(prevState => ({ ...prevState, [inputName]: text }));
   };
 
-  const showData = () => {
+  const handleSubmit = () => {
     Keyboard.dismiss();
     setInputs({
       email: '',
       password: '',
     });
-    console.log(inputs);
+    navigation.navigate('Home');
   };
   return (
     <ImageBackground
@@ -63,7 +63,7 @@ export default function LoginScreen() {
               }}
             />
           </KeyboardAvoidingView>
-          <Button title="Увійти" onPress={showData} />
+          <Button title="Увійти" onPress={handleSubmit} />
 
           <View style={styles.loginLink}>
             <Text style={styles.linkText}>Немає акаунту?</Text>

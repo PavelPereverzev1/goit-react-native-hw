@@ -28,14 +28,14 @@ export default function RegistrationScreen() {
     setInputs(prevState => ({ ...prevState, [inputName]: text }));
   };
 
-  const showData = () => {
+  const handleSubmit = () => {
     Keyboard.dismiss();
     setInputs({
       login: '',
       email: '',
       password: '',
     });
-    console.log(inputs);
+    navigation.navigate('Home');
   };
   return (
     <ImageBackground
@@ -79,7 +79,7 @@ export default function RegistrationScreen() {
               }}
             />
           </KeyboardAvoidingView>
-          <Button title="Зареєструватися" onPress={showData} />
+          <Button title="Зареєструватися" onPress={handleSubmit} />
           <View style={styles.regLink}>
             <Text style={styles.linkText}>Вже є акаунт? </Text>
             <TouchableOpacity
