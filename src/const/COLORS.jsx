@@ -6,6 +6,7 @@ const COLORS = {
   textClr: '#212121',
   linkTextClr: '#1B4371',
   white: '#ffffff',
+  gray: '#BDBDBD',
 };
 
 export default COLORS;
