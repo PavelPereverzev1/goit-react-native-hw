@@ -1,10 +1,12 @@
 import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
+import Post from '../components/Post';
 
-export default function PostsScreen() {
+export default function PostsScreen({ posts }) {
   return (
-    <View>
+    <ScrollView>
       <Text>PostsScreen</Text>
-    </View>
+    </ScrollView>
   );
 }
 
