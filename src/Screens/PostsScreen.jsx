@@ -1,13 +1,16 @@
-import { StyleSheet, Text, View } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { useState } from 'react';
+import { StyleSheet, ScrollView } from 'react-native';
 import Post from '../components/Post';
 
-export default function PostsScreen({ posts }) {
-  return (
-    <ScrollView>
-      <Text>PostsScreen</Text>
-    </ScrollView>
-  );
+export default function PostsScreen() {
+  return <ScrollView style={styles.container}></ScrollView>;
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingVertical: 32,
+    rowGap: 32,
+  },
+});

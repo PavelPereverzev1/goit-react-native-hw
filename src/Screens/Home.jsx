@@ -11,11 +11,6 @@ import { useNavigation } from '@react-navigation/native';
 const Tabs = createBottomTabNavigator();
 
 export default function Home() {
-  const [posts, setPosts] = useState([]);
-  const addPosts = post => {
-    setPosts(prevState => [...prevState, post]);
-  };
-
   const navigation = useNavigation();
   return (
     <Tabs.Navigator
@@ -41,7 +36,6 @@ export default function Home() {
       <Tabs.Screen
         name="Posts"
         component={PostsScreen}
-        posts={posts}
         options={{
           title: 'Публікації',
           headerRightContainerStyle: {
@@ -80,7 +74,6 @@ export default function Home() {
       <Tabs.Screen
         name="CreatePosts"
         component={CreatePostsScreen}
-        addPosts={addPosts}
         options={{
           title: 'Створити публікацію',
           tabBarStyle: { display: 'none' },

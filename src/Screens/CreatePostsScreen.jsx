@@ -14,7 +14,8 @@ import { Feather } from '@expo/vector-icons';
 import { Camera } from 'expo-camera';
 import * as MediaLibrary from 'expo-media-library';
 import * as Location from 'expo-location';
-import { nanoid } from 'nanoid';
+import { useNavigation } from '@react-navigation/native';
+import uuid from 'react-native-uuid';
 import COLORS from '../const/COLORS';
 import Button from '../components/Button';
 
@@ -23,11 +24,14 @@ export default function CreatePostsScreen({ addContact }) {
   const [type, setType] = useState(Camera.Constants.Type.back);
   const cameraRef = useRef(null);
   const [post, setPost] = useState({
+    id: '',
     uri: '',
     name: '',
     place: '',
     location: {},
   });
+
+  const navigation = useNavigation();
 
   useEffect(() => {
     (async () => {
@@ -51,17 +55,16 @@ export default function CreatePostsScreen({ addContact }) {
   };
 
   const getLocation = async () => {
-    let { status } = await Location.LocationPermissionResponse;
+    let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
       console.log('Permission to access location was denied');
     }
-
     let location = await Location.getCurrentPositionAsync({});
     const coords = {
       latitude: location.coords.latitude,
       longitude: location.coords.longitude,
     };
-    setPost(prevState => ({ ...prevState, location: coords }));
+    await setPost(prevState => ({ ...prevState, location: coords }));
   };
 
   const handleOnChange = (text, inputName) => {
@@ -69,10 +72,11 @@ export default function CreatePostsScreen({ addContact }) {
   };
 
   const createPost = () => {
-    const id = nanoid();
+    const newId = uuid.v4();
+    setPost(prevState => ({ ...prevState, id: newId }));
     getLocation();
-    setPost(prevState => ({ ...prevState, id }));
-    addContact(post);
+    // запис поста в хранилище
+    console.log(post);
   };
 
   return (
@@ -93,6 +97,7 @@ export default function CreatePostsScreen({ addContact }) {
           <View style={styles.inputContainer}>
             <TextInput
               placeholder="Назва..."
+              value={post.name}
               style={styles.input}
               onChangeText={text => {
                 handleOnChange(text, 'name');
@@ -109,6 +114,7 @@ export default function CreatePostsScreen({ addContact }) {
             />
             <TextInput
               placeholder="Місцевість..."
+              value={post.place}
               style={styles.input}
               onChangeText={text => {
                 handleOnChange(text, 'place');
@@ -116,8 +122,8 @@ export default function CreatePostsScreen({ addContact }) {
             />
           </View>
         </KeyboardAvoidingView>
-        <Button title={'Опублікувати'} />
-        <TouchableOpacity style={styles.trash} onPress={createPost}>
+        <Button title={'Опублікувати'} onPress={createPost} />
+        <TouchableOpacity style={styles.trash} onPress={() => {}}>
           <Feather
             name="trash-2"
             size={24}
