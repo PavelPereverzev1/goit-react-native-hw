@@ -19,7 +19,7 @@ import uuid from 'react-native-uuid';
 import COLORS from '../const/COLORS';
 import Button from '../components/Button';
 
-export default function CreatePostsScreen({ addContact }) {
+export default function CreatePostsScreen() {
   const [hasPermission, setHasPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const cameraRef = useRef(null);
@@ -75,25 +75,24 @@ export default function CreatePostsScreen({ addContact }) {
     const newId = uuid.v4();
     setPost(prevState => ({ ...prevState, id: newId }));
     getLocation();
-    // запис поста в хранилище
-    console.log(post);
+    // запис поста в store
+    navigation.navigate('Posts');
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ScrollView style={styles.container}>
+        <View style={styles.contentBox}>
+          <Camera style={styles.camera} type={type} ref={cameraRef}>
+            <TouchableOpacity style={styles.makePhotoBtn} onPress={makePhoto}>
+              <Feather name="camera" size={24} color="black" />
+            </TouchableOpacity>
+          </Camera>
+        </View>
+        <Text style={styles.lableText}>Завантажте фото</Text>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
-          <View style={styles.contentBox}>
-            <Camera style={styles.camera} type={type} ref={cameraRef}>
-              <TouchableOpacity style={styles.makePhotoBtn} onPress={makePhoto}>
-                <Feather name="camera" size={24} color="black" />
-              </TouchableOpacity>
-            </Camera>
-          </View>
-          <Text style={styles.lableText}>Завантажте фото</Text>
-
           <View style={styles.inputContainer}>
             <TextInput
               placeholder="Назва..."
@@ -110,7 +109,6 @@ export default function CreatePostsScreen({ addContact }) {
               style={{ marginRight: 4 }}
               size={24}
               color={COLORS.gray}
-              onPress={() => {}}
             />
             <TextInput
               placeholder="Місцевість..."

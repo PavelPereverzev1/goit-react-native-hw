@@ -3,7 +3,11 @@ import { StyleSheet, ScrollView } from 'react-native';
 import Post from '../components/Post';
 
 export default function PostsScreen() {
-  return <ScrollView style={styles.container}></ScrollView>;
+  return (
+    <ScrollView style={styles.container}>
+      <Post />
+    </ScrollView>
+  );
 }
 
 const styles = StyleSheet.create({
