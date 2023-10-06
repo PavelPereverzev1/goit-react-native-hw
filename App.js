@@ -7,6 +7,9 @@ import { StyleSheet } from 'react-native';
 import LoginScreen from './src/Screens/LoginScreen.jsx';
 import RegistrationScreen from './src/Screens/RegistrationScreen.jsx';
 import Home from './src/Screens/Home.jsx';
+import MapScreen from './src/Screens/MapScreen.jsx';
+import CommentsScreen from './src/Screens/CommentsScreen.jsx';
+import COLORS from './src/const/COLORS.jsx';
 
 const MainStack = createStackNavigator();
 
@@ -37,6 +40,34 @@ export default function App() {
             name="Home"
             component={Home}
             options={{ headerShown: false }}
+          />
+          <MainStack.Screen
+            name="Map"
+            component={MapScreen}
+            options={{
+              title: 'Мапа',
+              headerTitleAlign: 'center',
+              headerTitleStyle: {
+                textAlign: 'center',
+                fontSize: 17,
+                fontFamily: 'Roboto-Medium',
+                color: COLORS.textClr,
+              },
+            }}
+          />
+          <MainStack.Screen
+            name="Comments"
+            component={CommentsScreen}
+            options={{
+              title: 'Коментарі',
+              headerTitleAlign: 'center',
+              headerTitleStyle: {
+                textAlign: 'center',
+                fontSize: 17,
+                fontFamily: 'Roboto-Medium',
+                color: COLORS.textClr,
+              },
+            }}
           />
         </MainStack.Navigator>
       </NavigationContainer>

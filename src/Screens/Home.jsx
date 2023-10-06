@@ -1,17 +1,21 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import PostsScreen from './PostsScreen.jsx';
 import CreatePostsScreen from './CreatePostsScreen.jsx';
 import ProfileScreen from './ProfileScreen.jsx';
 import COLORS from '../const/COLORS.jsx';
 import { Feather } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 const Tabs = createBottomTabNavigator();
 
 export default function Home() {
+  const navigation = useNavigation();
   return (
     <Tabs.Navigator
       initialRouteName="Posts"
+      backBehavior="history"
       screenOptions={{
         headerStyle: {
           borderBottomWidth: 1,
@@ -38,7 +42,14 @@ export default function Home() {
             paddingRight: 16,
           },
           headerRight: () => (
-            <Feather name="log-out" size={24} color={COLORS.gray} />
+            <Feather
+              name="log-out"
+              size={24}
+              color={COLORS.gray}
+              onPress={() => {
+                navigation.goBack();
+              }}
+            />
           ),
           tabBarIcon: ({ focused, size }) => (
             <View
@@ -65,11 +76,19 @@ export default function Home() {
         component={CreatePostsScreen}
         options={{
           title: 'Створити публікацію',
+          tabBarStyle: { display: 'none' },
           headerLeftContainerStyle: {
             paddingLeft: 16,
           },
           headerLeft: () => (
-            <Feather name="arrow-left" size={24} color={COLORS.gray} />
+            <Feather
+              name="arrow-left"
+              size={24}
+              color={COLORS.gray}
+              onPress={() => {
+                navigation.navigate('Posts');
+              }}
+            />
           ),
           tabBarIcon: ({ focused, size }) => (
             <View
