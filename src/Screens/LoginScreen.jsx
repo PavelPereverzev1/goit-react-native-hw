@@ -7,8 +7,13 @@ import {
   KeyboardAvoidingView,
   StyleSheet,
   ImageBackground,
+  Alert,
 } from 'react-native';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../firebase';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../redux/slices/userSlice';
 import { useNavigation } from '@react-navigation/native';
 import COLORS from '../const/COLORS';
 import Input from '../components/Input';
@@ -16,7 +21,7 @@ import Button from '../components/Button';
 
 export default function LoginScreen() {
   const navigation = useNavigation();
-
+  const dispatch = useDispatch();
   const [inputs, setInputs] = useState({
     email: '',
     password: '',
@@ -26,14 +31,42 @@ export default function LoginScreen() {
     setInputs(prevState => ({ ...prevState, [inputName]: text }));
   };
 
-  const handleSubmit = () => {
-    Keyboard.dismiss();
-    setInputs({
-      email: '',
-      password: '',
-    });
-    navigation.navigate('Home');
+  const handleLogin = async ({ email, password }) => {
+    try {
+      Keyboard.dismiss();
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+      dispatch(
+        setUser({
+          name: inputs.login,
+          email: inputs.email,
+          id: user.uid,
+          token: user.token,
+        })
+      );
+      setInputs({
+        email: '',
+        password: '',
+      });
+      navigation.navigate('Home');
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode);
+      console.log(errorMessage);
+      if (errorCode === 'auth/user-not-found') {
+        // Alert('Пользователь не знайден.');
+        navigation.navigate('Registation');
+      } else {
+        // Alert(errorMessage);
+      }
+    }
   };
+
   return (
     <ImageBackground
       source={require('../../assets/PhotoBG.png')}
@@ -63,7 +96,12 @@ export default function LoginScreen() {
               }}
             />
           </KeyboardAvoidingView>
-          <Button title="Увійти" onPress={handleSubmit} />
+          <Button
+            title="Увійти"
+            onPress={() => {
+              handleLogin(inputs);
+            }}
+          />
 
           <View style={styles.loginLink}>
             <Text style={styles.linkText}>Немає акаунту?</Text>

@@ -8,7 +8,12 @@ import {
   KeyboardAvoidingView,
   StyleSheet,
   ImageBackground,
+  Alert,
 } from 'react-native';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { auth } from '../../firebase';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../redux/slices/userSlice';
 import COLORS from '../const/COLORS';
 import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
@@ -17,7 +22,7 @@ import Button from '../components/Button';
 
 export default function RegistrationScreen() {
   const navigation = useNavigation();
-
+  const dispatch = useDispatch();
   const [inputs, setInputs] = useState({
     login: '',
     email: '',
@@ -28,15 +33,39 @@ export default function RegistrationScreen() {
     setInputs(prevState => ({ ...prevState, [inputName]: text }));
   };
 
-  const handleSubmit = () => {
+  const handleRegister = async ({ email, password }) => {
     Keyboard.dismiss();
-    setInputs({
-      login: '',
-      email: '',
-      password: '',
-    });
-    navigation.navigate('Home');
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+      await updateProfile(user, { displayName: inputs.login });
+      dispatch(
+        setUser({
+          name: inputs.login,
+          email: inputs.email,
+          id: user.uid,
+          token: user.token,
+        })
+      );
+      setInputs({
+        login: '',
+        email: '',
+        password: '',
+      });
+      navigation.navigate('Home');
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode);
+      console.log(errorMessage);
+      // Alert(errorMessage);
+    }
   };
+
   return (
     <ImageBackground
       source={require('../../assets/PhotoBG.png')}
@@ -79,7 +108,12 @@ export default function RegistrationScreen() {
               }}
             />
           </KeyboardAvoidingView>
-          <Button title="Зареєструватися" onPress={handleSubmit} />
+          <Button
+            title="Зареєструватися"
+            onPress={() => {
+              handleRegister(inputs);
+            }}
+          />
           <View style={styles.regLink}>
             <Text style={styles.linkText}>Вже є акаунт? </Text>
             <TouchableOpacity
