@@ -34,6 +34,7 @@ export default function LoginScreen() {
   const handleLogin = async ({ email, password }) => {
     try {
       Keyboard.dismiss();
+      console.log('first');
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email,
@@ -57,9 +58,9 @@ export default function LoginScreen() {
       const errorCode = error.code;
       const errorMessage = error.message;
       console.log(errorCode);
-      console.log(errorMessage);
+      // console.log(errorMessage);
       if (errorCode === 'auth/user-not-found') {
-        // Alert('Пользователь не знайден.');
+        Alert('Пользователь не знайден.');
         navigation.navigate('Registation');
       } else {
         // Alert(errorMessage);

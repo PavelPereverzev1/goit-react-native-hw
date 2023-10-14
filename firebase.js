@@ -11,12 +11,12 @@ import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyBOZNhL8SYQDdHZX3Ovhg6oCVEPNXb031M',
-  authDomain: 'react-native-hw-211f0.firebaseapp.com',
-  projectId: 'react-native-hw-211f0',
-  storageBucket: 'react-native-hw-211f0.appspot.com',
-  messagingSenderId: '122462089732',
-  appId: '1:122462089732:web:690019ad7a77ab130e3b51',
+  apiKey: process.env.EXPO_PUBLIC_API_KEY,
+  authDomain: process.env.EXPO_PUBLIC_AUTH_DOMAIN,
+  projectId: process.env.EXPO_PUBLIC_PROJECT_ID,
+  storageBucket: process.env.EXPO_PUBLIC_STORAGE_BUCKET,
+  messagingSenderId: process.env.EXPO_PUBLIC_SENDER_ID,
+  appId: process.env.EXPO_PUBLIC_APP_ID,
 };
 
 const app = initializeApp(firebaseConfig);
