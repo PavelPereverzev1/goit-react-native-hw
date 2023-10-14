@@ -62,7 +62,7 @@ export default function RegistrationScreen() {
       const errorMessage = error.message;
       console.log(errorCode);
       console.log(errorMessage);
-      Alert(errorMessage);
+      Alert.alert('НЕ ВІРНІ АБО НЕ ПОВНІ ДАНІ');
     }
   };
 

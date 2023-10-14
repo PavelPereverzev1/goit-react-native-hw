@@ -1,10 +1,3 @@
-// import {
-//   Home,
-//   RegistrationScreen,
-//   LoginScreen,
-//   MapScreen,
-//   CommentsScreen,
-// } from '../Screens/index.js';
 import LoginScreen from '../Screens/LoginScreen.jsx';
 import RegistrationScreen from '../Screens/RegistrationScreen.jsx';
 import Home from '../Screens/Home.jsx';
@@ -19,7 +12,6 @@ import { useAuth } from '../hooks/useAuth';
 const MainStack = createStackNavigator();
 const MainNaviganion = () => {
   const { isAuth } = useAuth();
-
   return (
     <NavigationContainer>
       <MainStack.Navigator initialRouteName={isAuth ? 'Home' : 'Login'}>

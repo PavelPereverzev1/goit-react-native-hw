@@ -32,9 +32,8 @@ export default function LoginScreen() {
   };
 
   const handleLogin = async ({ email, password }) => {
+    Keyboard.dismiss();
     try {
-      Keyboard.dismiss();
-      console.log('first');
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email,
@@ -50,6 +49,7 @@ export default function LoginScreen() {
         })
       );
       setInputs({
+        login: '',
         email: '',
         password: '',
       });
@@ -58,13 +58,8 @@ export default function LoginScreen() {
       const errorCode = error.code;
       const errorMessage = error.message;
       console.log(errorCode);
-      // console.log(errorMessage);
-      if (errorCode === 'auth/user-not-found') {
-        Alert('Пользователь не знайден.');
-        navigation.navigate('Registation');
-      } else {
-        // Alert(errorMessage);
-      }
+      console.log(errorMessage);
+      Alert.alert('НЕ ВІРНІ АБО НЕ ПОВНІ ДАНІ');
     }
   };
 
