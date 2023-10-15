@@ -1,7 +1,8 @@
 import {
+  Image,
   Text,
-  TouchableOpacity,
   View,
+  TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
   KeyboardAvoidingView,
@@ -9,20 +10,21 @@ import {
   ImageBackground,
   Alert,
 } from 'react-native';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { auth } from '../../firebase';
-import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../redux/slices/userSlice';
-import { useNavigation } from '@react-navigation/native';
 import COLORS from '../const/COLORS';
+import { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import Input from '../components/Input';
 import Button from '../components/Button';
 
-export default function LoginScreen() {
+export default function Registration() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [inputs, setInputs] = useState({
+    login: '',
     email: '',
     password: '',
   });
@@ -31,19 +33,20 @@ export default function LoginScreen() {
     setInputs(prevState => ({ ...prevState, [inputName]: text }));
   };
 
-  const handleLogin = async ({ email, password }) => {
+  const handleRegister = async ({ email, password }) => {
     Keyboard.dismiss();
     try {
-      const userCredential = await signInWithEmailAndPassword(
+      const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
       const user = userCredential.user;
+      await updateProfile(user, { displayName: inputs.login });
       dispatch(
         setUser({
-          name: inputs.login,
-          email: inputs.email,
+          name: user.displayName,
+          email: user.email,
           id: user.uid,
           token: user.token,
         })
@@ -71,11 +74,24 @@ export default function LoginScreen() {
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
-          <Text style={styles.title}>Увійти</Text>
+          <View style={styles.iconBox}>
+            <TouchableOpacity style={styles.addImageBtn} onPress={() => {}}>
+              <Image source={require('../../assets/union.png')} />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.title}>Реєстрація</Text>
+
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             style={styles.wraper}
           >
+            <Input
+              placeholder="Логін"
+              value={inputs.login}
+              onChangeText={text => {
+                handleOnChange(text, 'login');
+              }}
+            />
             <Input
               placeholder="Адреса електроної пошти"
               value={inputs.email}
@@ -85,31 +101,30 @@ export default function LoginScreen() {
             />
             <Input
               placeholder="Пароль"
-              password
               value={inputs.password}
+              password
               onChangeText={text => {
                 handleOnChange(text, 'password');
               }}
             />
           </KeyboardAvoidingView>
           <Button
-            title="Увійти"
+            title="Зареєструватися"
             onPress={() => {
-              handleLogin(inputs);
+              handleRegister(inputs);
             }}
           />
-
-          <View style={styles.loginLink}>
-            <Text style={styles.linkText}>Немає акаунту?</Text>
+          <View style={styles.regLink}>
+            <Text style={styles.linkText}>Вже є акаунт? </Text>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('Registration');
+                navigation.navigate('Login');
               }}
             >
               <Text
                 style={[styles.linkText, { textDecorationLine: 'underline' }]}
               >
-                Зареєструватися
+                Увійти
               </Text>
             </TouchableOpacity>
           </View>
@@ -123,21 +138,41 @@ const styles = StyleSheet.create({
   container: {
     position: 'relative',
     backgroundColor: COLORS.screenBg,
-    height: 490,
-    paddingTop: 32,
+    height: 550,
+    marginTop: 300,
     paddingHorizontal: 16,
     alignItems: 'center',
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
+    paddingTop: 92,
+  },
+  iconBox: {
+    width: 120,
+    height: 120,
+    position: 'absolute',
+    left: '50%',
+    transform: [{ translateX: -60 }, { translateY: -60 }],
+    backgroundColor: COLORS.inputBg,
+    borderRadius: 16,
+  },
+  addImageBtn: {
+    position: 'absolute',
+    bottom: 14,
+    right: -12,
+    width: 25,
+    height: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 12.5,
+    borderWidth: 1,
+    borderColor: COLORS.orange,
   },
   title: {
-    color: COLORS.textClr,
     fontFamily: 'Roboto-Medium',
     fontSize: 30,
     marginBottom: 33,
   },
-
-  loginLink: {
+  regLink: {
     flexDirection: 'row',
     width: '100%',
     marginTop: 16,

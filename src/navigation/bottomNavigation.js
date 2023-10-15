@@ -1,8 +1,8 @@
 import { StyleSheet, View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import PostsScreen from '../Screens/PostsScreen.jsx';
-import CreatePostsScreen from '../Screens/CreatePostsScreen.jsx';
-import ProfileScreen from '../Screens/ProfileScreen.jsx';
+import Posts from '../Screens/Posts.jsx';
+import CreatePost from '../Screens/CreatePost.jsx';
+import Profile from '../Screens/Profile.jsx';
 import COLORS from '../const/COLORS.jsx';
 import { Feather } from '@expo/vector-icons';
 
@@ -32,7 +32,7 @@ const BottomNavigation = ({ logOut, navigation }) => {
     >
       <Tabs.Screen
         name="Posts"
-        component={PostsScreen}
+        component={Posts}
         options={{
           title: 'Публікації',
           headerRightContainerStyle: {
@@ -68,7 +68,7 @@ const BottomNavigation = ({ logOut, navigation }) => {
 
       <Tabs.Screen
         name="CreatePosts"
-        component={CreatePostsScreen}
+        component={CreatePost}
         options={{
           title: 'Створити публікацію',
           tabBarStyle: { display: 'none' },
@@ -104,7 +104,7 @@ const BottomNavigation = ({ logOut, navigation }) => {
 
       <Tabs.Screen
         name="Profile"
-        component={ProfileScreen}
+        component={Profile}
         options={{
           headerShown: false,
           tabBarIcon: ({ focused, size }) => (

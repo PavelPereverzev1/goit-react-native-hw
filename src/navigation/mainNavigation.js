@@ -1,8 +1,8 @@
-import LoginScreen from '../Screens/LoginScreen.jsx';
-import RegistrationScreen from '../Screens/RegistrationScreen.jsx';
+import Login from '../Screens/Login.jsx';
+import Registration from '../Screens/Registration.jsx';
 import Home from '../Screens/Home.jsx';
-import MapScreen from '../Screens/MapScreen.jsx';
-import CommentsScreen from '../Screens/CommentsScreen.jsx';
+import Map from '../Screens/Map.jsx';
+import Comments from '../Screens/Comments.jsx';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StyleSheet } from 'react-native';
@@ -17,12 +17,12 @@ const MainNaviganion = () => {
       <MainStack.Navigator initialRouteName={isAuth ? 'Home' : 'Login'}>
         <MainStack.Screen
           name="Login"
-          component={LoginScreen}
+          component={Login}
           options={{ headerShown: false }}
         />
         <MainStack.Screen
           name="Registration"
-          component={RegistrationScreen}
+          component={Registration}
           options={{ headerShown: false }}
         />
         <MainStack.Screen
@@ -32,7 +32,7 @@ const MainNaviganion = () => {
         />
         <MainStack.Screen
           name="Map"
-          component={MapScreen}
+          component={Map}
           options={{
             title: 'Мапа',
             headerTitleAlign: 'center',
@@ -46,7 +46,7 @@ const MainNaviganion = () => {
         />
         <MainStack.Screen
           name="Comments"
-          component={CommentsScreen}
+          component={Comments}
           options={{
             title: 'Коментарі',
             headerTitleAlign: 'center',

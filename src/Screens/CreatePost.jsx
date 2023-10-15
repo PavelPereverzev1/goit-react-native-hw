@@ -19,7 +19,7 @@ import uuid from 'react-native-uuid';
 import COLORS from '../const/COLORS';
 import Button from '../components/Button';
 
-export default function CreatePostsScreen() {
+export default function CreatePost() {
   const [hasPermission, setHasPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const cameraRef = useRef(null);
@@ -37,11 +37,9 @@ export default function CreatePostsScreen() {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
       await MediaLibrary.requestPermissionsAsync();
-
       setHasPermission(status === 'granted');
     })();
   }, []);
-
   if (hasPermission === false) {
     return <Text>No access to camera</Text>;
   }

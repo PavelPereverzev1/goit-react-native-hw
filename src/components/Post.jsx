@@ -53,6 +53,7 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     height: 'auto',
+    marginBottom: 32,
   },
   imageBox: {
     width: '100%',

@@ -1,7 +1,7 @@
 import { View, StyleSheet, Dimensions } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 
-export default function MapScreen() {
+export default function Map() {
   return (
     <View style={styles.container}>
       <MapView

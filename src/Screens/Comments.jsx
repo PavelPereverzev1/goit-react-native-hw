@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function ProfileScreen() {
+export default function Comments() {
   return (
     <View>
-      <Text>ProfileScreen</Text>
+      <Text>CommentsScreen</Text>
     </View>
   );
 }
