@@ -13,6 +13,7 @@ const BottomNavigation = ({ logOut, navigation }) => {
     <Tabs.Navigator
       initialRouteName="Posts"
       backBehavior="history"
+      detachInactiveScreens="false"
       screenOptions={{
         headerStyle: {
           borderBottomWidth: 1,

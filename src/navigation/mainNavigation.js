@@ -14,7 +14,10 @@ const MainNaviganion = () => {
   const { isAuth } = useAuth();
   return (
     <NavigationContainer>
-      <MainStack.Navigator initialRouteName={isAuth ? 'Home' : 'Login'}>
+      <MainStack.Navigator
+        initialRouteName={isAuth ? 'Home' : 'Login'}
+        backBehavior="firstRoute"
+      >
         <MainStack.Screen
           name="Login"
           component={Login}

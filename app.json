@@ -25,7 +25,15 @@
         "googleMaps": {
           "apiKey": "process.env.EXPO_PUBLIC_API_URL"
         }
-      }
+      },
+      "plugins": [
+        [
+          "expo-camera",
+          {
+            "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera."
+          }
+        ]
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
