@@ -1,15 +1,16 @@
 import { View, StyleSheet, Dimensions } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 
-export default function Map() {
+export default function Map({ route }) {
+  const { longitude, latitude } = route.params.location;
   return (
     <View style={styles.container}>
       <MapView
         provider={PROVIDER_GOOGLE}
         style={styles.mapStyle}
         region={{
-          latitude: 46.6524918,
-          longitude: 32.6178747,
+          latitude: latitude,
+          longitude: longitude,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
@@ -18,7 +19,7 @@ export default function Map() {
       >
         <Marker
           title="I am here"
-          coordinate={{ latitude: 48.661266, longitude: 25.093237 }}
+          coordinate={{ latitude: latitude, longitude: longitude }}
           description="Hello"
         />
       </MapView>

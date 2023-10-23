@@ -15,7 +15,7 @@ import { auth } from '../../firebase';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../redux/slices/userSlice';
 import COLORS from '../const/COLORS';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import Input from '../components/Input';
 import Button from '../components/Button';
@@ -23,11 +23,17 @@ import Button from '../components/Button';
 export default function Registration() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const [isDisabled, setIsDisabled] = useState(true);
   const [inputs, setInputs] = useState({
     login: '',
     email: '',
     password: '',
   });
+
+  useEffect(() => {
+    const { email, password } = inputs;
+    setIsDisabled(!(email && password));
+  }, [inputs]);
 
   const handleOnChange = (text, inputName) => {
     setInputs(prevState => ({ ...prevState, [inputName]: text }));
@@ -110,6 +116,7 @@ export default function Registration() {
           </KeyboardAvoidingView>
           <Button
             title="Зареєструватися"
+            isDisabled={isDisabled}
             onPress={() => {
               handleRegister(inputs);
             }}

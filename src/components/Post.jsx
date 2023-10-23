@@ -5,18 +5,14 @@ import { useNavigation } from '@react-navigation/native';
 
 //{ uri, name, place, location }
 
-const Post = () => {
+const Post = ({ id, uri, place, location, name }) => {
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <View style={styles.imageBox}>
-        <Image
-          source={require('../../assets/forest.png')}
-          style={styles.image}
-          resizeMode="cover"
-        />
+        <Image source={{ uri }} style={styles.image} resizeMode="cover" />
       </View>
-      <Text style={styles.textName}>Ліс</Text>
+      <Text style={styles.textName}>{name}</Text>
       <View style={styles.info}>
         <View style={{ flexDirection: 'row' }}>
           <Feather
@@ -37,13 +33,49 @@ const Post = () => {
             size={24}
             color={COLORS.gray}
             onPress={() => {
-              navigation.navigate('Map');
+              navigation.navigate('Map', { location });
             }}
           />
-          <Text style={styles.place}>Ivano-Frankivs'k Region, Ukraine</Text>
+          <Text style={styles.place}>{place}</Text>
         </View>
       </View>
     </View>
+    // <View style={styles.container}>
+    //   <View style={styles.imageBox}>
+    //     <Image
+    //       source={require('../../assets/forest.png')}
+    //       style={styles.image}
+    //       resizeMode="cover"
+    //     />
+    //   </View>
+    //   <Text style={styles.textName}>Ліс</Text>
+    //   <View style={styles.info}>
+    //     <View style={{ flexDirection: 'row' }}>
+    //       <Feather
+    //         name="message-circle"
+    //         style={{ marginRight: 6 }}
+    //         size={24}
+    //         color={COLORS.gray}
+    //         onPress={() => {
+    //           navigation.navigate('Comments');
+    //         }}
+    //       />
+    //       <Text style={styles.counter}>0</Text>
+    //     </View>
+    //     <View style={{ flexDirection: 'row', maxWidth: '80%' }}>
+    //       <Feather
+    //         name="map-pin"
+    //         style={{ marginRight: 4 }}
+    //         size={24}
+    //         color={COLORS.gray}
+    //         onPress={() => {
+    //           navigation.navigate('Map');
+    //         }}
+    //       />
+    //       <Text style={styles.place}>Ivano-Frankivs'k Region, Ukraine</Text>
+    //     </View>
+    //   </View>
+    // </View>
   );
 };
 

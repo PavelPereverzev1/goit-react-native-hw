@@ -1,34 +1,39 @@
-import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { StyleSheet, ScrollView, View, Image, Text } from 'react-native';
 import Post from '../components/Post';
 import { useAuth } from '../hooks/useAuth';
 import COLORS from '../const/COLORS';
+import PostLIst from '../components/PostList';
+import Loader from '../components/Loader';
+import { getIsLoading } from '../redux/selectors';
 
 export default function Posts() {
   const { name, email } = useAuth();
+  const isLoading = useSelector(getIsLoading);
+
   return (
-    <View style={styles.container}>
-      <View style={styles.userContainer}>
-        <View style={styles.userIcon}>
-          <Image
-            source={require('../../assets/UserIcon.png')}
-            style={styles.image}
-            resizeMode="cover"
-          />
+    <>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <View style={styles.container}>
+          <View style={styles.userContainer}>
+            <View style={styles.userIcon}>
+              <Image
+                source={require('../../assets/UserIcon.png')}
+                style={styles.image}
+                resizeMode="cover"
+              />
+            </View>
+            <View>
+              <Text style={styles.name}>{name}</Text>
+              <Text style={styles.email}>{email}</Text>
+            </View>
+          </View>
+          <PostLIst />
         </View>
-        <View>
-          <Text style={styles.name}>{name}</Text>
-          <Text style={styles.email}>{email}</Text>
-        </View>
-      </View>
-      <ScrollView style={styles.listContainer}>
-        <Post />
-        <Post />
-        <Post />
-        <Post />
-        <Post />
-      </ScrollView>
-    </View>
+      )}
+    </>
   );
 }
 

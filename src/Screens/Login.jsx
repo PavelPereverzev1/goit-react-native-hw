@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../firebase';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../redux/slices/userSlice';
 import { useNavigation } from '@react-navigation/native';
@@ -22,10 +22,16 @@ import Button from '../components/Button';
 export default function Login() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const [isDisabled, setIsDisabled] = useState(true);
   const [inputs, setInputs] = useState({
     email: '',
     password: '',
   });
+
+  useEffect(() => {
+    const { email, password } = inputs;
+    setIsDisabled(!(email && password));
+  }, [inputs]);
 
   const handleOnChange = (text, inputName) => {
     setInputs(prevState => ({ ...prevState, [inputName]: text }));
@@ -94,6 +100,7 @@ export default function Login() {
           </KeyboardAvoidingView>
           <Button
             title="Увійти"
+            isDisabled={isDisabled}
             onPress={() => {
               handleLogin(inputs);
             }}

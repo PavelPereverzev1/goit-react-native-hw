@@ -5,9 +5,8 @@ import Map from '../Screens/Map.jsx';
 import Comments from '../Screens/Comments.jsx';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { StyleSheet } from 'react-native';
 import COLORS from '../const/COLORS.jsx';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../hooks/useAuth.js';
 
 const MainStack = createStackNavigator();
 const MainNaviganion = () => {

@@ -5,7 +5,7 @@ import { useFonts } from 'expo-font';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import store from './src/redux/store.js';
-import MainNaviganion from './src/navigation/mainNavigation.js';
+import MainNaviganion from './src/navigation/mainNavigation.jsx';
 
 export default function App() {
   const [fontsLoaded] = useFonts({

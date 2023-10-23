@@ -10,6 +10,8 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   KeyboardAvoidingView,
+  Alert,
+  Image,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { Camera } from 'expo-camera';
@@ -22,19 +24,24 @@ import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage } from '../../firebase';
 import getFileNameFromUri from '../helpers/getFileNameFromUri';
 import getLocation from '../helpers/getLocation';
-import { addPost } from '../redux/slices/operation';
+import { addPost } from '../redux/operation';
 
 export default function CreatePost() {
   const [hasPermission, setHasPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const cameraRef = useRef(null);
   const isFocused = useIsFocused();
+  const [isDisabled, setIsDisabled] = useState(true);
   const [name, setName] = useState('');
   const [place, setPlace] = useState('');
-  const [uri, setUri] = useState('');
+  const [uri, setUri] = useState(null);
   const dispatch = useDispatch();
 
   const navigation = useNavigation();
+
+  useEffect(() => {
+    setIsDisabled(!(name && place && uri));
+  }, [name, place, uri]);
 
   useEffect(() => {
     (async () => {
@@ -68,11 +75,18 @@ export default function CreatePost() {
       () => {},
       error => {
         console.log(error.code);
+        Alert.alert('Помилка', 'Не вдалося створити публікацію');
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then(async downloadURL => {
           const location = await getLocation();
-          dispatch(addPost({ name, place, uri: downloadURL, location }));
+          dispatch(
+            addPost({ name, place, uri: downloadURL, location, comments: [] })
+          );
+          navigation.navigate('Posts');
+          setName('');
+          setPlace('');
+          setUri(null);
         });
       }
     );
@@ -82,7 +96,7 @@ export default function CreatePost() {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ScrollView style={styles.container}>
         <View style={styles.contentBox}>
-          {isFocused && (
+          {isFocused && !uri ? (
             <Camera style={styles.camera} type={type} ref={cameraRef}>
               <TouchableOpacity
                 style={styles.makePhotoBtn}
@@ -91,9 +105,22 @@ export default function CreatePost() {
                 <Feather name="camera" size={24} color="black" />
               </TouchableOpacity>
             </Camera>
+          ) : (
+            <Image source={{ uri }} style={styles.image} resizeMode="cover" />
           )}
         </View>
-        <Text style={styles.lableText}>Завантажте фото</Text>
+        {!uri ? (
+          <Text style={styles.lableText}>Зробіть фото</Text>
+        ) : (
+          <TouchableOpacity
+            onPress={() => {
+              setUri(null);
+            }}
+          >
+            <Text style={styles.lableText}>Переробити?</Text>
+          </TouchableOpacity>
+        )}
+
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
@@ -124,7 +151,11 @@ export default function CreatePost() {
             />
           </View>
         </KeyboardAvoidingView>
-        <Button title={'Опублікувати'} onPress={createPost} />
+        <Button
+          title={'Опублікувати'}
+          onPress={createPost}
+          isDisabled={isDisabled}
+        />
         <TouchableOpacity style={styles.trash} onPress={() => {}}>
           <Feather
             name="trash-2"
@@ -168,7 +199,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  image: { flex: 1 },
   lableText: {
+    textAlign: 'center',
     color: COLORS.gray,
     fontSize: 16,
     fontFamily: 'Roboto-Regular',
