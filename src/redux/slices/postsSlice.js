@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { addPost, getPosts } from '../operation';
+import { addPost, getPosts, addComment } from '../operation';
 
 const postsInitialState = {
   items: [],
@@ -13,7 +13,6 @@ const postsSlice = createSlice({
   extraReducers: builder =>
     builder
       .addCase(addPost.fulfilled, (state, action) => {
-        state.items.push(action.payload);
         state.error = null;
       })
       .addCase(addPost.rejected, (state, action) => {
@@ -28,6 +27,12 @@ const postsSlice = createSlice({
       })
       .addCase(getPosts.rejected, (state, action) => {
         state.isLoading = false;
+        state.error = action.payload;
+      })
+      .addCase(addComment.fulfilled, (state, action) => {
+        state.error = null;
+      })
+      .addCase(addComment.rejected, (state, action) => {
         state.error = action.payload;
       }),
 });

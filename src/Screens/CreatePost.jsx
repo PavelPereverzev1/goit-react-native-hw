@@ -24,7 +24,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage } from '../../firebase';
 import getFileNameFromUri from '../helpers/getFileNameFromUri';
 import getLocation from '../helpers/getLocation';
-import { addPost } from '../redux/operation';
+import { addPost, getPosts } from '../redux/operation';
 
 export default function CreatePost() {
   const [hasPermission, setHasPermission] = useState(null);
@@ -81,8 +81,15 @@ export default function CreatePost() {
         getDownloadURL(uploadTask.snapshot.ref).then(async downloadURL => {
           const location = await getLocation();
           dispatch(
-            addPost({ name, place, uri: downloadURL, location, comments: [] })
+            await addPost({
+              name,
+              place,
+              uri: downloadURL,
+              location,
+              comments: [],
+            })
           );
+          dispatch(getPosts());
           navigation.navigate('Posts');
           setName('');
           setPlace('');

@@ -52,6 +52,10 @@ const MainNaviganion = () => {
           options={{
             title: 'Коментарі',
             headerTitleAlign: 'center',
+            headerStyle: {
+              borderBottomWidth: 1,
+              borderBottomColor: COLORS.gray,
+            },
             headerTitleStyle: {
               textAlign: 'center',
               fontSize: 17,

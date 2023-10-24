@@ -1,6 +1,14 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { db } from '../../firebase';
-import { collection, doc, setDoc, getDocs, query } from 'firebase/firestore';
+import {
+  collection,
+  doc,
+  setDoc,
+  getDocs,
+  query,
+  updateDoc,
+  arrayUnion,
+} from 'firebase/firestore';
 
 const postsRef = collection(db, 'posts');
 const q = query(collection(db, 'posts'));
@@ -24,6 +32,23 @@ export const addPost = createAsyncThunk(
   async (newPost, thunkAPI) => {
     try {
       await setDoc(doc(postsRef), newPost);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(e.message);
+    }
+  }
+);
+
+export const addComment = createAsyncThunk(
+  'posts/addComment',
+  async (data, thunkAPI) => {
+    const { id, newComment } = data;
+    const commentRef = doc(db, 'posts', id);
+    // console.log(postsRef);
+    await updateDoc(commentRef, {
+      comments: arrayUnion(newComment),
+    });
+    return { id, newComment };
+    try {
     } catch (error) {
       return thunkAPI.rejectWithValue(e.message);
     }

@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 //{ uri, name, place, location }
 
-const Post = ({ id, uri, place, location, name }) => {
+const Post = ({ id, uri, place, location, name, comments }) => {
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
@@ -21,10 +21,10 @@ const Post = ({ id, uri, place, location, name }) => {
             size={24}
             color={COLORS.gray}
             onPress={() => {
-              navigation.navigate('Comments');
+              navigation.navigate('Comments', { id, uri });
             }}
           />
-          <Text style={styles.counter}>0</Text>
+          <Text style={styles.counter}> 0</Text>
         </View>
         <View style={{ flexDirection: 'row', maxWidth: '80%' }}>
           <Feather
@@ -40,42 +40,6 @@ const Post = ({ id, uri, place, location, name }) => {
         </View>
       </View>
     </View>
-    // <View style={styles.container}>
-    //   <View style={styles.imageBox}>
-    //     <Image
-    //       source={require('../../assets/forest.png')}
-    //       style={styles.image}
-    //       resizeMode="cover"
-    //     />
-    //   </View>
-    //   <Text style={styles.textName}>Ліс</Text>
-    //   <View style={styles.info}>
-    //     <View style={{ flexDirection: 'row' }}>
-    //       <Feather
-    //         name="message-circle"
-    //         style={{ marginRight: 6 }}
-    //         size={24}
-    //         color={COLORS.gray}
-    //         onPress={() => {
-    //           navigation.navigate('Comments');
-    //         }}
-    //       />
-    //       <Text style={styles.counter}>0</Text>
-    //     </View>
-    //     <View style={{ flexDirection: 'row', maxWidth: '80%' }}>
-    //       <Feather
-    //         name="map-pin"
-    //         style={{ marginRight: 4 }}
-    //         size={24}
-    //         color={COLORS.gray}
-    //         onPress={() => {
-    //           navigation.navigate('Map');
-    //         }}
-    //       />
-    //       <Text style={styles.place}>Ivano-Frankivs'k Region, Ukraine</Text>
-    //     </View>
-    //   </View>
-    // </View>
   );
 };
 
