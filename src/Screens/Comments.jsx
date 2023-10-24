@@ -1,35 +1,43 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import moment from 'moment/moment';
 import { useDispatch } from 'react-redux';
 import { addComment } from '../redux/operation';
 import { useAuth } from '../hooks/useAuth';
 import {
   StyleSheet,
-  Text,
   View,
   Image,
   TextInput,
   TouchableOpacity,
-  FlatList,
+  Keyboard,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import COLORS from '../const/COLORS';
+import CommentsList from '../components/CommentsList';
 import { Feather } from '@expo/vector-icons';
 
 export default function Comments({ route }) {
   const { uri, id } = route.params;
   const { name } = useAuth();
-  const [comentText, setCommentText] = useState('');
+  const [commentText, setCommentText] = useState('');
+  const [isDisabled, setIsDisabled] = useState(true);
   const dispatch = useDispatch();
 
   const handleSubmit = () => {
     const newComment = {
       name,
-      comentText,
+      commentText,
       timeStamp: moment().format('DD-MMMM-YYYY|hh:mm'),
     };
+    Keyboard.dismiss();
     dispatch(addComment({ id, newComment }));
     setCommentText('');
   };
+
+  useEffect(() => {
+    setIsDisabled(!commentText);
+  }, [commentText]);
 
   return (
     <View style={styles.container}>
@@ -37,18 +45,32 @@ export default function Comments({ route }) {
         <Image source={{ uri }} style={styles.image} resizeMode="cover" />
       </View>
 
-      <FlatList />
+      <CommentsList id={id} />
 
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.wraper}
+      ></KeyboardAvoidingView>
       <View style={styles.inputWraper}>
         <TextInput
           style={{ flex: 1, fontFamily: 'Roboto-Regular', fontSize: 16 }}
           placeholder="Коментувати ..."
           autoCorrect={false}
+          value={commentText}
           onChangeText={text => {
             setCommentText(text);
           }}
         />
-        <TouchableOpacity style={styles.sendBtn} onPress={handleSubmit}>
+        <TouchableOpacity
+          style={[
+            styles.sendBtn,
+            {
+              backgroundColor: isDisabled ? COLORS.disabledBtn : COLORS.orange,
+            },
+          ]}
+          onPress={handleSubmit}
+          {...{ disabled: isDisabled, touchSoundDisabled: isDisabled }}
+        >
           <Feather name="arrow-up" size={18} color={COLORS.white} />
         </TouchableOpacity>
       </View>

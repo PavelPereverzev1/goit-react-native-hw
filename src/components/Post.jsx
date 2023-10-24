@@ -3,8 +3,6 @@ import COLORS from '../const/COLORS';
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
-//{ uri, name, place, location }
-
 const Post = ({ id, uri, place, location, name, comments }) => {
   const navigation = useNavigation();
   return (

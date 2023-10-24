@@ -9,6 +9,7 @@ const COLORS = {
   white: '#ffffff',
   gray: '#BDBDBD',
   disabledBtn: 'rgba(230, 217, 207, 0.7)',
+  commentBg: 'rgba(0, 0, 0, 0.03)',
 };
 
 export default COLORS;

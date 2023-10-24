@@ -30,6 +30,10 @@ const postsSlice = createSlice({
         state.error = action.payload;
       })
       .addCase(addComment.fulfilled, (state, action) => {
+        state.items.forEach(item => {
+          item.id === action.payload.id &&
+            item.comments.push(action.payload.newComment);
+        });
         state.error = null;
       })
       .addCase(addComment.rejected, (state, action) => {
