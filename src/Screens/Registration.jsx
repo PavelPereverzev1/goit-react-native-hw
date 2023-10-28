@@ -8,35 +8,70 @@ import {
   KeyboardAvoidingView,
   StyleSheet,
   ImageBackground,
+  Alert,
 } from 'react-native';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { auth } from '../../firebase';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../redux/slices/userSlice';
 import COLORS from '../const/COLORS';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import Input from '../components/Input';
 import Button from '../components/Button';
 
-export default function RegistrationScreen() {
+export default function Registration() {
   const navigation = useNavigation();
-
+  const dispatch = useDispatch();
+  const [isDisabled, setIsDisabled] = useState(true);
   const [inputs, setInputs] = useState({
     login: '',
     email: '',
     password: '',
   });
 
+  useEffect(() => {
+    const { email, password } = inputs;
+    setIsDisabled(!(email && password));
+  }, [inputs]);
+
   const handleOnChange = (text, inputName) => {
     setInputs(prevState => ({ ...prevState, [inputName]: text }));
   };
 
-  const handleSubmit = () => {
+  const handleRegister = async ({ email, password }) => {
     Keyboard.dismiss();
-    setInputs({
-      login: '',
-      email: '',
-      password: '',
-    });
-    navigation.navigate('Home');
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+      await updateProfile(user, { displayName: inputs.login });
+      dispatch(
+        setUser({
+          name: user.displayName,
+          email: user.email,
+          id: user.uid,
+          token: user.token,
+        })
+      );
+      setInputs({
+        login: '',
+        email: '',
+        password: '',
+      });
+      navigation.navigate('Home');
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode);
+      console.log(errorMessage);
+      Alert.alert('НЕ ВІРНІ АБО НЕ ПОВНІ ДАНІ');
+    }
   };
+
   return (
     <ImageBackground
       source={require('../../assets/PhotoBG.png')}
@@ -79,7 +114,13 @@ export default function RegistrationScreen() {
               }}
             />
           </KeyboardAvoidingView>
-          <Button title="Зареєструватися" onPress={handleSubmit} />
+          <Button
+            title="Зареєструватися"
+            isDisabled={isDisabled}
+            onPress={() => {
+              handleRegister(inputs);
+            }}
+          />
           <View style={styles.regLink}>
             <Text style={styles.linkText}>Вже є акаунт? </Text>
             <TouchableOpacity

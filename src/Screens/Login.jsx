@@ -7,33 +7,68 @@ import {
   KeyboardAvoidingView,
   StyleSheet,
   ImageBackground,
+  Alert,
 } from 'react-native';
-import { useState } from 'react';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../firebase';
+import { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../redux/slices/userSlice';
 import { useNavigation } from '@react-navigation/native';
 import COLORS from '../const/COLORS';
 import Input from '../components/Input';
 import Button from '../components/Button';
 
-export default function LoginScreen() {
+export default function Login() {
   const navigation = useNavigation();
-
+  const dispatch = useDispatch();
+  const [isDisabled, setIsDisabled] = useState(true);
   const [inputs, setInputs] = useState({
     email: '',
     password: '',
   });
 
+  useEffect(() => {
+    const { email, password } = inputs;
+    setIsDisabled(!(email && password));
+  }, [inputs]);
+
   const handleOnChange = (text, inputName) => {
     setInputs(prevState => ({ ...prevState, [inputName]: text }));
   };
 
-  const handleSubmit = () => {
+  const handleLogin = async ({ email, password }) => {
     Keyboard.dismiss();
-    setInputs({
-      email: '',
-      password: '',
-    });
-    navigation.navigate('Home');
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+      dispatch(
+        setUser({
+          name: user.displayName,
+          email: user.email,
+          id: user.uid,
+          token: user.token,
+        })
+      );
+      setInputs({
+        login: '',
+        email: '',
+        password: '',
+      });
+      navigation.navigate('Home');
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode);
+      console.log(errorMessage);
+      Alert.alert('НЕ ВІРНІ АБО НЕ ПОВНІ ДАНІ');
+    }
   };
+
   return (
     <ImageBackground
       source={require('../../assets/PhotoBG.png')}
@@ -63,8 +98,13 @@ export default function LoginScreen() {
               }}
             />
           </KeyboardAvoidingView>
-          <Button title="Увійти" onPress={handleSubmit} />
-
+          <Button
+            title="Увійти"
+            isDisabled={isDisabled}
+            onPress={() => {
+              handleLogin(inputs);
+            }}
+          />
           <View style={styles.loginLink}>
             <Text style={styles.linkText}>Немає акаунту?</Text>
             <TouchableOpacity

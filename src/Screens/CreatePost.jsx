@@ -1,105 +1,143 @@
 import { useState, useEffect, useRef } from 'react';
+import { useDispatch } from 'react-redux';
 import {
   StyleSheet,
   Text,
   View,
+  ScrollView,
   TouchableOpacity,
   TextInput,
   TouchableWithoutFeedback,
   Keyboard,
   KeyboardAvoidingView,
-  ScrollView,
+  Alert,
+  Image,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { Camera } from 'expo-camera';
 import * as MediaLibrary from 'expo-media-library';
-import * as Location from 'expo-location';
-import { useNavigation } from '@react-navigation/native';
-import uuid from 'react-native-uuid';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import COLORS from '../const/COLORS';
 import Button from '../components/Button';
+import makePhoto from '../helpers/makePhoto';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { storage } from '../../firebase';
+import getFileNameFromUri from '../helpers/getFileNameFromUri';
+import getLocation from '../helpers/getLocation';
+import { addPost, getPosts } from '../redux/operation';
 
-export default function CreatePostsScreen() {
+export default function CreatePost() {
   const [hasPermission, setHasPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const cameraRef = useRef(null);
-  const [post, setPost] = useState({
-    id: '',
-    uri: '',
-    name: '',
-    place: '',
-    location: {},
-  });
+  const isFocused = useIsFocused();
+  const [isDisabled, setIsDisabled] = useState(true);
+  const [name, setName] = useState('');
+  const [place, setPlace] = useState('');
+  const [uri, setUri] = useState(null);
+  const dispatch = useDispatch();
 
   const navigation = useNavigation();
+
+  useEffect(() => {
+    setIsDisabled(!(name && place && uri));
+  }, [name, place, uri]);
 
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
       await MediaLibrary.requestPermissionsAsync();
-
       setHasPermission(status === 'granted');
     })();
   }, []);
-
   if (hasPermission === false) {
     return <Text>No access to camera</Text>;
   }
 
-  const makePhoto = async () => {
-    if (cameraRef) {
-      const data = await cameraRef.current.takePictureAsync();
-      await MediaLibrary.createAssetAsync(data.uri);
-      setPost(prevState => ({ ...prevState, uri: data.uri }));
-    }
+  const handlePhoto = async () => {
+    const uri = await makePhoto(cameraRef);
+    setUri(uri);
   };
 
-  const getLocation = async () => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
-      console.log('Permission to access location was denied');
-    }
-    let location = await Location.getCurrentPositionAsync({});
-    const coords = {
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
+  const createPost = async () => {
+    const fileName = getFileNameFromUri(uri);
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    const metadata = {
+      contentType: 'image/jpeg',
     };
-    await setPost(prevState => ({ ...prevState, location: coords }));
-  };
 
-  const handleOnChange = (text, inputName) => {
-    setPost(prevState => ({ ...prevState, [inputName]: text }));
-  };
+    const storageRef = ref(storage, 'images/' + fileName);
+    const uploadTask = uploadBytesResumable(storageRef, blob, metadata);
 
-  const createPost = () => {
-    const newId = uuid.v4();
-    setPost(prevState => ({ ...prevState, id: newId }));
-    getLocation();
-    // запис поста в store
-    navigation.navigate('Posts');
+    uploadTask.on(
+      'state_changed',
+      () => {},
+      error => {
+        console.log(error.code);
+        Alert.alert('Помилка', 'Не вдалося створити публікацію');
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then(async downloadURL => {
+          const location = await getLocation();
+          dispatch(
+            await addPost({
+              name,
+              place,
+              uri: downloadURL,
+              location,
+              comments: [],
+            })
+          );
+          dispatch(getPosts());
+          navigation.navigate('Posts');
+          setName('');
+          setPlace('');
+          setUri(null);
+        });
+      }
+    );
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ScrollView style={styles.container}>
         <View style={styles.contentBox}>
-          <Camera style={styles.camera} type={type} ref={cameraRef}>
-            <TouchableOpacity style={styles.makePhotoBtn} onPress={makePhoto}>
-              <Feather name="camera" size={24} color="black" />
-            </TouchableOpacity>
-          </Camera>
+          {isFocused && !uri ? (
+            <Camera style={styles.camera} type={type} ref={cameraRef}>
+              <TouchableOpacity
+                style={styles.makePhotoBtn}
+                onPress={handlePhoto}
+              >
+                <Feather name="camera" size={24} color="black" />
+              </TouchableOpacity>
+            </Camera>
+          ) : (
+            <Image source={{ uri }} style={styles.image} resizeMode="cover" />
+          )}
         </View>
-        <Text style={styles.lableText}>Завантажте фото</Text>
+        {!uri ? (
+          <Text style={styles.lableText}>Зробіть фото</Text>
+        ) : (
+          <TouchableOpacity
+            onPress={() => {
+              setUri(null);
+            }}
+          >
+            <Text style={styles.lableText}>Переробити?</Text>
+          </TouchableOpacity>
+        )}
+
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
           <View style={styles.inputContainer}>
             <TextInput
               placeholder="Назва..."
-              value={post.name}
+              value={name}
               style={styles.input}
               onChangeText={text => {
-                handleOnChange(text, 'name');
+                setName(text);
               }}
             />
           </View>
@@ -112,15 +150,19 @@ export default function CreatePostsScreen() {
             />
             <TextInput
               placeholder="Місцевість..."
-              value={post.place}
+              value={place}
               style={styles.input}
               onChangeText={text => {
-                handleOnChange(text, 'place');
+                setPlace(text);
               }}
             />
           </View>
         </KeyboardAvoidingView>
-        <Button title={'Опублікувати'} onPress={createPost} />
+        <Button
+          title={'Опублікувати'}
+          onPress={createPost}
+          isDisabled={isDisabled}
+        />
         <TouchableOpacity style={styles.trash} onPress={() => {}}>
           <Feather
             name="trash-2"
@@ -164,7 +206,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  image: { flex: 1 },
   lableText: {
+    textAlign: 'center',
     color: COLORS.gray,
     fontSize: 16,
     fontFamily: 'Roboto-Regular',
