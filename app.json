@@ -7,7 +7,6 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "jsEngine": "hermes",
-
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -15,7 +14,8 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.pavel1975.goitreactnativehw"
     },
     "android": {
       "adaptiveIcon": {
@@ -27,18 +27,23 @@
           "apiKey": "process.env.EXPO_PUBLIC_API_URL"
         }
       },
-      "plugins": [
-        [
-          "expo-camera",
-          {
-            "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera."
-          },
-          "@react-native-firebase/app"
-        ]
-      ]
+      "package": "com.pavel1975.goitreactnativehw"
     },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(goit-react-native-hw) to access your camera."
+        }
+      ]
+    ],
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "d1274a3c-6051-4fa9-a973-555696eb23cf"
+      }
     }
   }
 }
